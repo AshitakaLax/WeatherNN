@@ -29,8 +29,11 @@ print(WeatherList.describe())
 weather_feature = WeatherList[["visibility"]]
 weather_feature_columns = [tf.feature_column.numeric_column("visibility")]
 weather_targets = WeatherList["solar_energy"]
-weather_optimizer=tf.train.GradientDescentOptimizer(learning_rate=0.01)
-weather_optimizer = tf.contrib.estimator.clip_gradients_by_norm(weather_optimizer, 5.0)
+# the default for the learning rate was 0.0000001
+weather_optimizer=tf.train.GradientDescentOptimizer(learning_rate=0.1)
+
+# the default for the clip_norm paramater(2nd parameter) was 5.0
+weather_optimizer = tf.contrib.estimator.clip_gradients_by_norm(weather_optimizer, 50.0)
 
 # Configure the linear regression model with our feature columns and optimizer.
 # Set a learning rate of 0.0000001 for Gradient Descent.
@@ -71,10 +74,10 @@ linear_regressor = tf.estimator.LinearRegressor(
 	weather_feature_columns,
 	optimizer=weather_optimizer
 )
-
+# the default number of steps was 100
 linear_regressor.train(
     input_fn = lambda:weather_input_fn(weather_feature, weather_targets),
-    steps=100
+    steps=1000
 )
 
 # Create an input function for predictions.
