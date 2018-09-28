@@ -77,7 +77,7 @@ linear_regressor = tf.estimator.LinearRegressor(
 # the default number of steps was 100
 linear_regressor.train(
     input_fn = lambda:weather_input_fn(weather_feature, weather_targets),
-    steps=1000
+    steps=10000
 )
 
 # Create an input function for predictions.
