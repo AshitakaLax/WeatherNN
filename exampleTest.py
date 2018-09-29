@@ -68,20 +68,18 @@ categorizeLabels(TestSetLabels)
 TestSetLabels = to_categorical(TestSetLabels, 5)
 
 #create a test set from the number of samples and traning set
-
-print(TrainingSetFeatures.shape)
 net = tflearn.input_data(shape=[None, 12])
 net = tflearn.fully_connected(net, 32)
 net = tflearn.fully_connected(net, 32)
-net = tflearn.fully_connected(net, 5)
-net = tflearn.regression(net, optimizer='sigmoid', loss='categorical_crossentropy', learning_rate=0.001)
+net = tflearn.fully_connected(net, 5, activation="softplus")
+net = tflearn.regression(net, optimizer="adam", learning_rate=0.1)
 # categorized the data into bins for and that should be the number of 0.88888
 #EBM_Audio_Classification DeepLearning
 # Define model
 model = tflearn.DNN(net)
 
 # Start training (apply gradient descent algorithm)
-model.fit(TrainingSetFeatures, TrainingSetLabels, n_epoch=3, batch_size=16, show_metric=True, run_id='WEATHER_1')
+model.fit(TrainingSetFeatures, TrainingSetLabels, n_epoch=20, batch_size=20, show_metric=True)
 
 # Let's create some data for DiCaprio and Winslet
 lowOutput =  [0, 0, 0, 0, 0, 9.92, 0.37, -0.01, 89.12, 4.72, 29.19, 29.98]
