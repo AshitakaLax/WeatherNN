@@ -12,18 +12,10 @@ from tflearn.data_utils import load_csv, to_categorical
 
 # The file containing the weather samples (including the column header)
 WEATHER_SAMPLE_FILE = 'weather.csv'
-#data, labels = load_csv(WEATHER_SAMPLE_FILE, target_column=12, categorical_labels=True, n_classes=2)
 data, labels = load_csv(WEATHER_SAMPLE_FILE, target_column=11, columns_to_ignore=[0])
 
 TrainingSetFeatures = data
-#TestSetFeatures = data
 TrainingSetLabels = labels
-#TestSetLabels = labels
-
-#TrainingSetFeatures = data[:6000]
-#TestSetFeatures = data[6000:]
-#TrainingSetLabels = labels[:6000]
-#TestSetLabels = labels[6000:]
 
 def preprocessor(data):
 	copyData = np.zeros((len(data), 12))
@@ -66,26 +58,23 @@ def categorizeLabels(labels):
 			labels[i] = 0
 
 TrainingSetFeatures = preprocessor(TrainingSetFeatures)
-#TestSetFeatures = preprocessor(TestSetFeatures)
 categorizeLabels(TrainingSetLabels)
 TrainingSetLabels = to_categorical(TrainingSetLabels, 5)
-#categorizeLabels(TestSetLabels)
-#TestSetLabels = to_categorical(TestSetLabels, 5)
 
 #create a test set from the number of samples and traning set
 net = tflearn.input_data(shape=[None, 12])
 net = tflearn.fully_connected(net, 64)
 net = tflearn.fully_connected(net, 64)
 net = tflearn.fully_connected(net, 64)
-net = tflearn.fully_connected(net, 5, activation="softplus")
-net = tflearn.regression(net, optimizer="adam", learning_rate=0.001)
+net = tflearn.fully_connected(net, 5, activation="softmax")
+net = tflearn.regression(net)
 # categorized the data into bins for and that should be the number of 0.88888
-#EBM_Audio_Classification DeepLearning
+
 # Define model
 model = tflearn.DNN(net)
 
 # Start training (apply gradient descent algorithm)
-model.fit(TrainingSetFeatures, TrainingSetLabels, n_epoch=2, batch_size=12, show_metric=True)
+model.fit(TrainingSetFeatures, TrainingSetLabels, n_epoch=2, batch_size=12, show_metric=True, validation_set=0.1)
 
 # Let's create some data for DiCaprio and Winslet
 lowOutput =  [0, 0, 0, 0, 0, 9.92, 0.37, -0.01, 89.12, 4.72, 29.19, 29.98]
