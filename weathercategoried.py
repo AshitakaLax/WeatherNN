@@ -63,28 +63,31 @@ TrainingSetLabels = to_categorical(TrainingSetLabels, 5)
 
 #create a test set from the number of samples and traning set
 net = tflearn.input_data(shape=[None, 12])
-net = tflearn.fully_connected(net, 64)
-net = tflearn.fully_connected(net, 64)
-net = tflearn.fully_connected(net, 64)
-net = tflearn.fully_connected(net, 5, activation="softmax")
-net = tflearn.regression(net)
+net = tflearn.fully_connected(net, 32)
+net = tflearn.fully_connected(net, 32)
+net = tflearn.fully_connected(net, 32)
+net = tflearn.fully_connected(net, 5, activation="softplus")
+# 
+# learning rate perhaps to high
+# Parameters may exceed the dataset
+# Adjust the training set sizes
+# todo: confusion matrix
+net = tflearn.regression(net, learning_rate=0.01, optimizer="adam")
+
 # categorized the data into bins for and that should be the number of 0.88888
 
 # Define model
-model = tflearn.DNN(net)
+model = tflearn.DNN(net, clip_gradients=1.0)
 
 # Start training (apply gradient descent algorithm)
-model.fit(TrainingSetFeatures, TrainingSetLabels, n_epoch=2, batch_size=12, show_metric=True, validation_set=0.1)
+model.fit(TrainingSetFeatures, TrainingSetLabels, n_epoch=15, batch_size=20, show_metric=True)
 
 # Let's create some data for DiCaprio and Winslet
-lowOutput =  [0, 0, 0, 0, 0, 9.92, 0.37, -0.01, 89.12, 4.72, 29.19, 29.98]
-highOutput = [0, 0, 0, 0, 0, 10, 6.16, 1.26, 68.96, 0, 29.26, 30.05]
+lowOutput =  [6.123233995736766e-17, 1.0, 0.8520775211013093, 0.5234156073655503, 0, 9.92, 0.37, -0.01, 89.12, 4.72, 29.19, 29.98]
+highOutput = [-0.8660254037844386, -0.5000000000000001, 0.8520775211013093, 0.5234156073655503, 0, 10, 6.16, 1.26, 68.96, 0, 29.26, 30.05]
 
 pred = model.predict([lowOutput, highOutput])
 
 # find index
-lowOutputPrediction = pred[0].argmax()
-highOutputPrediction = pred[1].argmax()
-
-print("lowoutput estimate:", lowOutputPrediction)
-print("highOutput estimate:", highOutputPrediction)
+print(pred[0])
+print(pred[1])
