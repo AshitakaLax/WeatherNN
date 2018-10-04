@@ -71,16 +71,17 @@ TrainingSetLabels = to_categorical(TrainingSetLabels, 5)
 
 #create a test set from the number of samples and traning set
 net = tflearn.input_data(shape=[None, 12])
-net = tflearn.fully_connected(net, 32, activation="softsign", name='First_Fully_Connected')
-net = tflearn.fully_connected(net, 32, activation="softsign", name='Second_Fully_Connected')
-net = tflearn.fully_connected(net, 32, activation="softsign", name='Third_Fully_Connected')
-net = tflearn.fully_connected(net, 5, activation="softmax", name='Final_Fully_Connected')
+net = tflearn.fully_connected(net, 32, weights_init='xavier', activation="softsign", name='First_Fully_Connected')
+net = tflearn.fully_connected(net, 32, weights_init='xavier', activation="softsign", name='Second_Fully_Connected')
+net = tflearn.fully_connected(net, 32, weights_init='xavier', activation="softsign", name='Third_Fully_Connected')
+net = tflearn.fully_connected(net,  5, activation="softmax", name='Final_Fully_Connected')
 # 
 # learning rate perhaps to high
 # Parameters may exceed the dataset
 # Adjust the training set sizes
 # todo: confusion matrix
-net = tflearn.regression(net, learning_rate=0.0001, optimizer="adam", batch_size=128)
+adam = tflearn.Adam()
+net = tflearn.regression(net, learning_rate=0.001, optimizer=adam)
 
 # categorized the data into bins for and that should be the number of 0.88888
 
@@ -88,7 +89,7 @@ net = tflearn.regression(net, learning_rate=0.0001, optimizer="adam", batch_size
 model = tflearn.DNN(net, clip_gradients=1.0, tensorboard_verbose=3, tensorboard_dir='./tmp/weather.log')
 
 # Start training (apply gradient descent algorithm)
-model.fit(TrainingSetFeatures, TrainingSetLabels, n_epoch=10, batch_size=24, show_metric=True)
+model.fit(TrainingSetFeatures, TrainingSetLabels, n_epoch=15, batch_size=24, show_metric=True)
 
 # Let's create some data for DiCaprio and Winslet
 #lowOutput =  [6.123233995736766e-17, 1.0, 0.8520775211013093, 0.5234156073655503, 0, 9.92, 0.37, -0.01, 89.12, 4.72, 29.19, 29.98]
@@ -101,5 +102,7 @@ pred = model.predict([lowOutput, highOutput])
 # find index
 print('Should be 0')
 print(pred[0].argmax())
+print(pred[0])
 print('Should be 4')
 print(pred[1].argmax())
+print(pred[1])
