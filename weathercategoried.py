@@ -81,7 +81,7 @@ net = tflearn.regression(net, learning_rate=0.001, optimizer=adam)
 model = tflearn.DNN(net, clip_gradients=1.0, tensorboard_verbose=3, tensorboard_dir='./tmp/weather.log')
 
 # Start training (apply gradient descent algorithm)
-model.fit(TrainingSetFeatures, TrainingSetLabels, n_epoch=25, batch_size=24, show_metric=True)
+model.fit(TrainingSetFeatures, TrainingSetLabels, n_epoch=15, batch_size=24, show_metric=True)
 
 # Let's create some data for DiCaprio and Winslet
 lowOutput =  [6.123233995736766e-17, 1.0, 0.8520775211013093, 0.5234156073655503, 0, 9.92, 0.37, -0.01, 89.12, 4.72, 29.19, 29.98]
@@ -107,3 +107,5 @@ print(pred[1])
 # Should be 4
 # 4
 # [0.00629283 0.04267056 0.07286685 0.33001602 0.5481537 ]
+
+# scalar
